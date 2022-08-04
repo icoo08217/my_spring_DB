@@ -6,6 +6,8 @@ import com.ll.exam.mymap.MyMap;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
+import java.time.LocalDate;
+import java.time.temporal.ChronoUnit;
 import java.util.List;
 import java.util.stream.IntStream;
 
@@ -104,5 +106,26 @@ public class ArticleServiceTest {
         assertThat(articleDto.getCreatedDate()).isNotNull();
         assertThat(articleDto.getModifiedDate()).isNotNull();
         assertThat(articleDto.isBlind()).isEqualTo(false);
+    }
+    @Test
+    public void modify() {
+        ArticleService articleService = Container.getObj(ArticleService.class);
+
+        articleService.modify(1 ,"제목 new" , "내용 new", true);
+
+        ArticleDto articleDto = articleService.getArticleById(1);
+
+        assertThat(articleDto.getId()).isEqualTo(1);
+        assertThat(articleDto.getTitle()).isEqualTo("제목 new");
+        assertThat(articleDto.getBody()).isEqualTo("내용 new");
+        assertThat(articleDto.getCreatedDate()).isNotNull();
+        assertThat(articleDto.getModifiedDate()).isNotNull();
+        assertThat(articleDto.isBlind()).isEqualTo(true);
+
+        // DB에서 받아온 게시물 수정날짜와 자바에서 계산한 현재 날짜를 비교하여(초단위)
+        // 그것이 1초 이하로 차이가 난다면
+        // 갱신되었다 라고 할 수 있다.
+//        long diffSeconds = ChronoUnit.SECONDS.between(articleDto.getModifiedDate(), LocalDate.now());
+//        assertThat(diffSeconds).isLessThanOrEqualTo(1L);
     }
 }
