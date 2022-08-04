@@ -35,4 +35,10 @@ public class ArticleService {
     public long delete(int id) {
         return articleRepository.delete(id);
     }
+
+
+    public ArticleDto getPrevArticle(ArticleDto articleDto) {
+        long id = articleDto.getId();
+        return articleRepository.getPrevArticle(id);
+    }
 }
