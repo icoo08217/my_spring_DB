@@ -48,4 +48,19 @@ public class ArticleServiceTest {
     }
 
 
+    @Test
+    public void write() {
+        ArticleService articleService = Container.getObj(ArticleService.class);
+        // selectLong 메서드 이용
+        long newArticleId = articleService.write("제목 new" , "내용 new", false);
+
+        ArticleDto articleDto = articleService.getArticleById(newArticleId);
+
+        assertThat(articleDto.getId()).isEqualTo(newArticleId);
+        assertThat(articleDto.getTitle()).isEqualTo("제목 new");
+        assertThat(articleDto.getBody()).isEqualTo("내용 new");
+        assertThat(articleDto.getCreatedDate()).isNotNull();
+        assertThat(articleDto.getModifiedDate()).isNotNull();
+        assertThat(articleDto.isBlind()).isEqualTo(false);
+    }
 }
