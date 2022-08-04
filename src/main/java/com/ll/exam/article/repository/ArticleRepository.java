@@ -27,7 +27,15 @@ public class ArticleRepository {
         sql
                 .append("SELECT *")
                 .append("FROM article")
-                .append("Where id = ?" , id);
+                .append("WHERE id = ?" , id);
         return sql.selectRow(ArticleDto.class);
+    }
+
+    public long getArticlesCount() {
+        SecSql sql = myMap.genSecSql();
+        sql
+                .append("SELECT COUNT(*)")
+                .append("FROM article");
+        return sql.selectLong();
     }
 }
