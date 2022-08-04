@@ -16,7 +16,7 @@ public class ArticleService {
         return articleRepository.getArticles();
     }
 
-    public ArticleDto getArticleById(int id) {
-
+    public ArticleDto getArticleById(long id) {
+        return articleRepository.getArticlesById(id);
     }
 }

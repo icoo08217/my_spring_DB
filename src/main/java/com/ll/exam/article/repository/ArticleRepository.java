@@ -22,12 +22,12 @@ public class ArticleRepository {
         return sql.selectRows(ArticleDto.class);
     }
 
-    public List<ArticleDto> getArticlesById(int id) {
+    public ArticleDto getArticlesById(long id) {
         SecSql sql = myMap.genSecSql();
         sql
                 .append("SELECT *")
                 .append("FROM article")
-                .append("ORDER BY id DESC");
-        return sql.selectRows(ArticleDto.class);
+                .append("Where id = ?" , id);
+        return sql.selectRow(ArticleDto.class);
     }
 }
