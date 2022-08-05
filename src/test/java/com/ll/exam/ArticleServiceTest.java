@@ -26,8 +26,9 @@ public class ArticleServiceTest {
         articleService = Container.getObj(ArticleService.class);
     }
 
+    // @BeforeAll 붙인 아래 메서드는
     @BeforeAll
-    public void BeforAll(){
+    public void BeforeAll() {
         // 모든 DB 처리시에, 처리되는 SQL을 콘솔에 출력
         myMap.setDevMode(true);
     }
@@ -35,6 +36,7 @@ public class ArticleServiceTest {
     // @BeforeEach를 붙인 아래 메서드는
     // @Test가 달려있는 메서드가 실행되기 전에 자동으로 실행이 된다.
     // 주로 테스트 환경을 깔끔하게 정리하는 역할을 한다.
+    // 즉 각각의 테스트케이스가 독립적인 환경에서 실행될 수 있도록 하는 역할을 한다.
     @BeforeEach
     public void beforeEach() {
         // 게시물 테이블을 깔끔하게 삭제한다.
@@ -46,7 +48,6 @@ public class ArticleServiceTest {
     }
 
     private void makeArticleTestData() {
-
         IntStream.rangeClosed(1, TEST_DATA_SIZE).forEach(no -> {
             boolean isBlind = no >= 11 && no <= 20;
             String title = "제목%d".formatted(no);
@@ -67,21 +68,20 @@ public class ArticleServiceTest {
         // 테이블을 깔끔하게 지워준다.
         myMap.run("TRUNCATE article");
     }
-    @Test
-    public void 존재한다(){
 
+    @Test
+    public void 존재한다() {
         assertThat(articleService).isNotNull();
     }
 
     @Test
-    public void getArticles(){
-
+    public void getArticles() {
         List<ArticleDto> articleDtoList = articleService.getArticles();
         assertThat(articleDtoList.size()).isEqualTo(TEST_DATA_SIZE);
     }
 
     @Test
-    public void getArticleById(){
+    public void getArticleById() {
         ArticleDto articleDto = articleService.getArticleById(1);
 
         assertThat(articleDto.getId()).isEqualTo(1L);
@@ -90,22 +90,18 @@ public class ArticleServiceTest {
         assertThat(articleDto.getCreatedDate()).isNotNull();
         assertThat(articleDto.getModifiedDate()).isNotNull();
         assertThat(articleDto.isBlind()).isFalse();
-
     }
 
     @Test
     public void getArticlesCount() {
-        // selectLong 메서드 이용
         long articlesCount = articleService.getArticlesCount();
 
         assertThat(articlesCount).isEqualTo(TEST_DATA_SIZE);
     }
 
-
     @Test
     public void write() {
-        // selectLong 메서드 이용
-        long newArticleId = articleService.write("제목 new" , "내용 new", false);
+        long newArticleId = articleService.write("제목 new", "내용 new", false);
 
         ArticleDto articleDto = articleService.getArticleById(newArticleId);
 
@@ -116,12 +112,12 @@ public class ArticleServiceTest {
         assertThat(articleDto.getModifiedDate()).isNotNull();
         assertThat(articleDto.isBlind()).isEqualTo(false);
     }
+
     @Test
     public void modify() {
+        //Ut.sleep(5000);
 
-        // Ut.sleep(5000);
-
-        articleService.modify(1 ,"제목 new" , "내용 new", true);
+        articleService.modify(1, "제목 new", "내용 new", true);
 
         ArticleDto articleDto = articleService.getArticleById(1);
 
@@ -132,34 +128,36 @@ public class ArticleServiceTest {
 
         // DB에서 받아온 게시물 수정날짜와 자바에서 계산한 현재 날짜를 비교하여(초단위)
         // 그것이 1초 이하로 차이가 난다면
-        // 갱신되었다 라고 할 수 있다.
+        // 수정날짜가 갱신되었다 라고 볼 수 있음
         long diffSeconds = ChronoUnit.SECONDS.between(articleDto.getModifiedDate(), LocalDateTime.now());
         assertThat(diffSeconds).isLessThanOrEqualTo(1L);
     }
 
     @Test
     public void delete() {
-        long id = articleService.delete(1);
-        ArticleDto articleDto = articleService.getArticleById(id);
+        articleService.delete(1);
+
+        ArticleDto articleDto = articleService.getArticleById(1);
 
         assertThat(articleDto).isNull();
     }
 
     @Test
     public void _2번글의_이전글은_1번글_이다() {
-        ArticleDto id2ArcicleDto = articleService.getArticleById(2);
-        ArticleDto id1ArticleDto = articleService.getPrevArticle(id2ArcicleDto);
+        ArticleDto id2ArticleDto = articleService.getArticleById(2);
+        ArticleDto id1ArticleDto = articleService.getPrevArticle(id2ArticleDto);
 
         assertThat(id1ArticleDto.getId()).isEqualTo(1);
     }
 
     @Test
-    public void _1번글의_이전글은_없다(){
+    public void _1번글의_이전글은_없다() {
         ArticleDto id1ArticleDto = articleService.getArticleById(1);
         ArticleDto nullArticleDto = articleService.getPrevArticle(id1ArticleDto);
 
         assertThat(nullArticleDto).isNull();
     }
+
     @Test
     public void _2번글의_다음글은_3번글_이다() {
         ArticleDto id3ArticleDto = articleService.getNextArticle(2);
@@ -181,5 +179,4 @@ public class ArticleServiceTest {
 
         assertThat(nextArticleDto.getId()).isEqualTo(21);
     }
-
 }

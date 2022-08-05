@@ -5,13 +5,13 @@ USE blog;
 
 # article 테이블 생성
 CREATE TABLE article (
-    id INT UNSIGNED NOT NULL AUTO_INCREMENT,
-    PRIMARY KEY(id),
-    createdDate DATETIME NOT NULL,
-    modifiedDate DATETIME NOT NULL,
-    title VARCHAR(100) NOT NULL,
-    `body` TEXT NOT NULL,
-    isBlind BIT(1) NOT NULL DEFAULT(0)
+                         id INT UNSIGNED NOT NULL AUTO_INCREMENT,
+                         PRIMARY KEY(id),
+                         createdDate DATETIME NOT NULL,
+                         modifiedDate DATETIME NOT NULL,
+                         title VARCHAR(100) NOT NULL,
+                         `body` TEXT NOT NULL,
+                         isBlind BIT(1) NOT NULL DEFAULT(0)
 );
 
 # article 테이블 샘플 데이터 생성

@@ -22,12 +22,12 @@ public class ArticleRepository {
         return sql.selectRows(ArticleDto.class);
     }
 
-    public ArticleDto getArticlesById(long id) {
+    public ArticleDto getArticleById(long id) {
         SecSql sql = myMap.genSecSql();
         sql
                 .append("SELECT *")
                 .append("FROM article")
-                .append("WHERE id = ?" , id);
+                .append("WHERE id = ?", id);
         return sql.selectRow(ArticleDto.class);
     }
 
@@ -45,53 +45,33 @@ public class ArticleRepository {
                 .append("INSERT INTO article")
                 .append("SET createdDate = NOW()")
                 .append(", modifiedDate = NOW()")
-                .append(", title = ?" , title)
-                .append(", body = ?" , body)
-                .append(", isBlind = ?" , isBlind);
+                .append(", title = ?", title)
+                .append(", body = ?", body)
+                .append(", isBlind = ?", isBlind);
 
         return sql.insert();
     }
 
-    public void modify(int id, String title, String body, boolean isBlind) {
+    public void modify(long id, String title, String body, boolean isBlind) {
         SecSql sql = myMap.genSecSql();
         sql
                 .append("UPDATE article")
                 .append("SET modifiedDate = NOW()")
-                .append(", title = ?" , title)
-                .append(", body = ?" , body)
-                .append(", isBlind = ?" , isBlind)
+                .append(", title = ?", title)
+                .append(", body = ?", body)
+                .append(", isBlind = ?", isBlind)
                 .append("WHERE id = ?", id);
 
         sql.update();
     }
 
-    public long delete(int id) {
+    public void delete(long id) {
         SecSql sql = myMap.genSecSql();
         sql
-                .append("DELETE from article")
+                .append("DELETE FROM article")
                 .append("WHERE id = ?", id);
 
-        return sql.delete();
-    }
-
-    public ArticleDto getBeforeArticle(int id) {
-        SecSql sql = myMap.genSecSql();
-        sql
-                .append("SELECT *")
-                .append("FROM article")
-                .append("WHERE id = ?", id - 1);
-
-        return sql.selectRow(ArticleDto.class);
-    }
-
-    public ArticleDto getAfterArticle(int id) {
-        SecSql sql = myMap.genSecSql();
-        sql
-                .append("SELECT *")
-                .append("FROM article")
-                .append("WHERE id = ?", id + 1);
-
-        return sql.selectRow(ArticleDto.class);
+        sql.update();
     }
 
     public ArticleDto getPrevArticle(long id) {
@@ -100,7 +80,7 @@ public class ArticleRepository {
                 .append("SELECT *")
                 .append("FROM article")
                 .append("WHERE id < ?", id)
-                .append("And isBlind = 0")
+                .append("AND isBlind = 0")
                 .append("ORDER BY id DESC")
                 .append("LIMIT 1");
         return sql.selectRow(ArticleDto.class);
@@ -112,7 +92,7 @@ public class ArticleRepository {
                 .append("SELECT *")
                 .append("FROM article")
                 .append("WHERE id > ?", id)
-                .append("And isBlind = 0")
+                .append("AND isBlind = 0")
                 .append("ORDER BY id ASC")
                 .append("LIMIT 1");
         return sql.selectRow(ArticleDto.class);
